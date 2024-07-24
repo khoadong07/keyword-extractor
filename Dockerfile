@@ -19,4 +19,4 @@ COPY . /app
 WORKDIR /app
 
 # Command to run the application using Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+CMD ["python", "main.py"]

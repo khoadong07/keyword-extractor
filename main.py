@@ -9,11 +9,6 @@ from response_template import bad_request, success
 
 app = FastAPI()
 
-# Kiểm tra xem có GPU có sẵn không
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-# Tải mô hình Sentence Transformers
-model = SentenceTransformer('paraphrase-mpnet-base-v2', device=device)
 
 
 # Đọc danh sách từ khóa từ tệp JSON
@@ -21,15 +16,13 @@ def load_keywords(filename):
     with open(filename, 'r', encoding='utf-8') as file:
         return json.load(file)
 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+model = SentenceTransformer('paraphrase-mpnet-base-v2', device=device)
 
-# Tải từ khóa từ tệp
-flat_keywords = load_keywords('beauty_keywords.json')
+flat_keywords = load_keywords('keywords/beauty_skincare.json')
 
-# Tính embedding cho tất cả các từ khóa
 keyword_embeddings = {keyword: model.encode(keyword, convert_to_tensor=True) for keyword in flat_keywords}
 
-
-# Hàm tính embedding của một câu
 def get_embedding(text):
     return model.encode(text, convert_to_tensor=True)
 
@@ -63,7 +56,7 @@ def find_related_keyword(sentence):
     return related_keyword
 
 class Query(BaseModel):
-    sentence: str
+    query: str
 
 @app.post("/api/find-keyword")
 async def find_keyword(query: Query):
