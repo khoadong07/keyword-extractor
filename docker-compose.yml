@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  llm-extract-keyword:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: llm-extract-keyword
+    networks:
+      ai-network:
+        ipv4_address: "170.20.0.18"
+
+networks:
+  ai-network:
+    external:
+      name: ai-network
+
