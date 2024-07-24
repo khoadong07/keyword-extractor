@@ -12,9 +12,6 @@ COPY requirements.txt /app/requirements.txt
 # Install the dependencies from requirements.txt
 RUN pip install -r /app/requirements.txt
 
-
-RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/paraphrase-mpnet-base-v2')"
-
 # Copy the rest of the application code into the container
 COPY . /app
 
