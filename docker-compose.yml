@@ -6,6 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: llm-extract-keyword
+    ports:
+      - "9999:8000"
     networks:
       ai-network:
         ipv4_address: "170.20.0.18"
