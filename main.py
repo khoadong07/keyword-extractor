@@ -5,7 +5,7 @@ import json
 import torch
 from starlette.middleware.cors import CORSMiddleware
 
-from find_keyword import find_related_keyword
+from find_keyword import find_related_keyword, general_inference
 from response_template import bad_request, success
 
 app = FastAPI()
@@ -69,6 +69,24 @@ def find_related_keyword(sentence):
 
 class Query(BaseModel):
     query: str
+
+
+@app.post("/api/build-filter-keyword")
+async def find_keyword(query: Query):
+    sentence = query.query
+    if not sentence:
+        return bad_request(
+            message="Query is null or empty",
+            data=None
+        )
+    generate_json = general_inference(sentence)
+    related_keyword = find_related_keyword(sentence)
+
+    if related_keyword:
+        result = {"related_keyword": related_keyword}
+        return success(message="Successfully", data=generate_json)
+    else:
+        return bad_request(message="Keyword not found", data=None)
 
 
 @app.post("/api/find-keyword")

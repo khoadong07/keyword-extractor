@@ -3,3 +3,4 @@ fastapi
 uvicorn
 sentence-transformers
 torch
+pydantic-settings==2.3.1
