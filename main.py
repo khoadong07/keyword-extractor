@@ -80,10 +80,8 @@ async def find_keyword(query: Query):
             data=None
         )
     generate_json = general_inference(sentence)
-    related_keyword = find_related_keyword(sentence)
 
-    if related_keyword:
-        result = {"related_keyword": related_keyword}
+    if generate_json:
         return success(message="Successfully", data=generate_json)
     else:
         return bad_request(message="Keyword not found", data=None)

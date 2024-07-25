@@ -94,14 +94,8 @@ def general_inference(content_input):
         if llm_response:
             core = extract_json_from_string(llm_response)
             core["keywords"] = related_keyword
-            result = {
-                "id": response.json()['id'],
-                "created": response.json()['created'],
-                "model": response.json()['model'],
-                "core": core,
-                "usage": response.json()['usage']
-            }
-            return result
+
+            return core
         else:
             return None
     else:
