@@ -6,6 +6,7 @@ import torch
 from starlette.middleware.cors import CORSMiddleware
 
 from find_keyword import find_related_keyword, general_inference
+from generate_keyword_typo import generate_typos_with_llm
 from response_template import bad_request, success
 
 app = FastAPI()
@@ -100,6 +101,23 @@ async def find_keyword(query: Query):
 
     if related_keyword:
         result = {"related_keyword": related_keyword}
+        return success(message="Successfully", data=result)
+    else:
+        return bad_request(message="Keyword not found", data=None)
+
+@app.post("/api/generate-spelling-err")
+async def find_keyword(query: Query):
+    sentence = query.query
+    if not sentence:
+        return bad_request(
+            message="Query is null or empty",
+            data=None
+        )
+
+    generate = generate_typos_with_llm(sentence)
+
+    if generate:
+        result = {"generate": generate}
         return success(message="Successfully", data=result)
     else:
         return bad_request(message="Keyword not found", data=None)
