@@ -1,8 +1,8 @@
 from openai import OpenAI
 import ast
+import config
 
-OPENAI_KEY = 'sk-proj-a8ZaCbiGYELGMheM4dXFT3BlbkFJhzT1rXAZmbMfoIBS1BFU'
-client = OpenAI(api_key=OPENAI_KEY)
+client = OpenAI(api_key=config.settings.OPEN_AI_KEY)
 
 
 def generate_typos_with_llm(text):

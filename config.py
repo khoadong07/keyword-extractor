@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     FIREWORKS_API_MAX_TOKEN: str
     TEMPERATURE: str
     FIREWORKS_MODEL: str
-
+    OPEN_AI_KEY: str
     class Config:
         env_file = ".env"
 
