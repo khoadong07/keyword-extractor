@@ -72,6 +72,16 @@ class Query(BaseModel):
     query: str
 
 
+def retry_gen_spelling(content):
+    retries = 3
+    while retries > 0:
+        print(f"retry time: {retries}")
+        result = generate_typos_with_llm(content)
+        if result is not None:
+            return result
+        retries -= 1
+    return False
+
 @app.post("/api/build-filter-keyword")
 async def find_keyword(query: Query):
     sentence = query.query
@@ -114,11 +124,10 @@ async def find_keyword(query: Query):
             data=None
         )
 
-    generate = generate_typos_with_llm(sentence)
+    generate = retry_gen_spelling(sentence)
 
     if generate:
-        result = {"generate": generate}
-        return success(message="Successfully", data=result)
+        return success(message="Successfully", data=generate)
     else:
         return bad_request(message="Keyword not found", data=None)
 
