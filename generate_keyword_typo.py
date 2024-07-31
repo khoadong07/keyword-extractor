@@ -60,7 +60,7 @@ def generate_typos_with_llm(text):
         "content": (
             f"Generate typo variations of the following Vietnamese sentence, including the original sentence itself: '{text}'. "
             "Focus on spelling errors in Vietnamese, including handling Vietnamese diacritics. "
-            "The output should always be a JSON object with the format {{'key_gen': ['{text}', 'key1', 'key2', ...]}}. "
+            "The output should always be a JSON object with the format {{\"key_gen\": [\"{text}\", \"key1\", \"key2\", ...]}}. "
             "Only generate based on the provided text, do not add any creativity. Pay attention to spaces between words, including potential typos or missing spaces. "
             "Return only the result in the specified JSON format. If the output is not in the exact JSON format as requested, retry until it matches."
         )
