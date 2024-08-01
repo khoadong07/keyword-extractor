@@ -4,6 +4,8 @@ from sentence_transformers import SentenceTransformer, util
 import json
 import torch
 from starlette.middleware.cors import CORSMiddleware
+from starlette.websockets import WebSocket
+from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
 from find_keyword import find_related_keyword, general_inference
 from generate_keyword_typo import generate_typos_with_llm
@@ -130,6 +132,33 @@ async def find_keyword(query: Query):
         return success(message="Successfully", data=generate)
     else:
         return bad_request(message="Keyword not found", data=None)
+
+
+tokenizer = GPT2Tokenizer.from_pretrained('NlpHUST/gpt2-vietnamese')
+model = GPT2LMHeadModel.from_pretrained('NlpHUST/gpt2-vietnamese')
+
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        input_text = data.strip()
+        input_ids = tokenizer.encode(input_text, return_tensors='pt')
+        max_length = len(input_ids[0]) + 1
+
+        sample_outputs = model.generate(input_ids,
+                                        pad_token_id=tokenizer.eos_token_id,
+                                        do_sample=True,
+                                        max_length=max_length,
+                                        top_k=40,
+                                        num_beams=5,
+                                        early_stopping=True,
+                                        no_repeat_ngram_size=2,
+                                        num_return_sequences=3)
+
+        suggestions = [tokenizer.decode(output.tolist(), skip_special_tokens=True) for output in sample_outputs]
+        await websocket.send_text("\n---\n".join(suggestions))
 
 
 if __name__ == "__main__":
