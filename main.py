@@ -138,7 +138,7 @@ tokenizer = GPT2Tokenizer.from_pretrained('NlpHUST/gpt2-vietnamese')
 model = GPT2LMHeadModel.from_pretrained('NlpHUST/gpt2-vietnamese')
 
 
-@app.websocket("/ws")
+@app.websocket("/ws/generate-text")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     while True:
